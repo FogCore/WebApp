@@ -1,0 +1,188 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-2">
+                <div class="nav nav-pills flex-lg-column sticky-top sticky-offset" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link active" id="v-pills-applications-tab" data-toggle="pill" href="#v-pills-applications" role="tab" aria-controls="v-pills-applications" aria-selected="true">Fog Applications</a>
+                    <a class="nav-link" id="v-pills-api-tab" data-toggle="pill" href="#v-pills-api" role="tab" aria-controls="v-pills-api" aria-selected="false">API Methods</a>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-10 col-12 offset-xl-1 offset-lg-0 mt-3">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-pane fade show active" id="v-pills-applications" role="tabpanel" aria-labelledby="v-pills-applications-tab">
+                        <h3>Application Image</h3>
+                        <p>
+                            If you want to use FogCore system in order to distribute your applications using the concept of fog computing, you need to create an image of your application.
+                            Based on this image, the system will create and run containers on fog devices around the world.
+                        </p>
+
+                        <h3>What is a Container?</h3>
+                        <p>
+                            A container is a standard unit of software that packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to another.
+                            Container image is a lightweight, standalone, executable package of software that includes everything needed to run an application: code, runtime, system tools, system libraries and settings.
+                            Available for both Linux and Windows-based applications, containerized software will always run the same, regardless of the infrastructure.
+                            Containers isolate software from its environment and ensure that it works uniformly despite differences for instance between development and staging.
+                        </p>
+                        <p>
+                            We use Docker as the most popular containerization solution today. If you need more information about it, please visit the <a href="https://www.docker.com">official Docker website</a> or <a href="https://docs.docker.com">read the documentation</a>.
+                        </p>
+
+                        <h3>Image Requirements</h3>
+                        <p>
+                            You can create any application image, use any technology and dependencies.
+                            We don't care what's going on inside your containers, our task is to find the node closest to the place of demand and run your application on it.
+                            For example, your Dockerfile may look like this.
+                        </p>
+                        <div class="col pl-3 pr-3">
+                            <pre><code><span class="text-danger">FROM</span> python:alpine
+
+<span class="text-danger">ADD</span> . /code
+<span class="text-danger">WORKDIR</span> /code
+
+<span class="text-danger">RUN</span> pip install --no-cache-dir --upgrade pip
+<span class="text-danger">RUN</span> pip install --no-cache-dir -r requirements.txt
+
+<span class="text-danger">EXPOSE</span> 80/tcp
+<span class="text-danger">EXPOSE</span> 443/tcp
+
+<span class="text-danger">CMD</span> ["python", "app.py"]</code></pre>
+                        </div>
+                        <p>
+                            The <b>EXPOSE</b> instruction informs FogCore that the container listens on the specified network ports at runtime. You can specify whether the port listens on TCP or UDP, and the default is TCP if the protocol is not specified.
+                            Make sure to use the <b>EXPOSE</b> instruction if you want your application to be available from outside.
+                        </p>
+                        <p>
+                            You can find more information about Dockerfile in <a href="https://docs.docker.com/engine/reference/builder/">the official documentation</a>.
+                        </p>
+
+                        <h3>Image Upload</h3>
+                        <p>
+                            To upload your application image you need to sign up in FogCore system and upload the image using Docker Client on your computer.
+                        </p>
+                        <div class="col pl-3 pr-3">
+                            <pre><code><span class="text-dark-blue">docker</span> push fogcore.registry.com:4000/your_image_name:label</code></pre>
+                        </div>
+                        <p>
+                            To make the Docker Client work with FogCore Registry, you need to add its address to the list of insecure registries.
+                            Edit the <span class="text-dark-blue-filled">daemon.json</span> file, whose default location is <span class="text-dark-blue-filled">/etc/docker/daemon.json</span> on Linux or <span class="text-dark-blue-filled">C:\ProgramData\docker\config\daemon.json</span> on Windows Server.
+                            If you use Docker Desktop for Mac or Docker Desktop for Windows, click the Docker icon, choose <b>Preferences</b>, and choose +<b>Daemon</b>.
+                            If the <span class="text-dark-blue-filled">daemon.json</span> file does not exist, create it. Then restart Docker for the changes to take effect.
+                            Assuming there are no other settings in the file, it should have the following contents:
+                        </p>
+                        <pre><code>{
+  <span class="text-danger">"insecure-registries"</span> : [<span class="text-danger">"fogcore.registry.com:4000"</span>]
+}</code></pre>
+                        <p>
+                            You can find more information about insecure Registry in <a href="https://docs.docker.com/registry/insecure/">the official documentation</a>.
+                        </p>
+                    </div>
+
+                    <div class="tab-pane fade" id="v-pills-api" role="tabpanel" aria-labelledby="v-pills-api-tab">
+                        <h3>API Methods</h3>
+                        <p>
+                            Although the FogCore system was originally designed to be used by IoT devices, any application, device or person can use its computing resources.
+                        </p>
+                        <p>
+                            An <b>IoT device</b> is any self-contained device connected to the Internet that requires computing resources.
+                            A set of IoT devices that work with a single instance of a running fog application we call <b>an IoT Device Cluster</b>.
+                        </p>
+                        <p>
+                            <b>The IoT Hub</b> is the main IoT device in the cluster that allows other IoT devices to connect to the cluster.
+                            The IoT Hub has all the features of IoT devices and can also create a cluster of IoT devices by reporting its geographic location to the FogCore system.
+                            FogCore will find the closest IoT Hub fog node and run the necessary application on it in an isolated container.
+                            The IoT Hub can also remove the created cluster of IoT devices if it is no longer needed.
+                        </p>
+
+                        <h3 class="border-bottom"><span class="badge badge-secondary mb-1">POST</span> /cluster</h3>
+                        <p>
+                            This method creates a new cluster of IoT devices based on the geographic location of the IoT Hub and the name of the necessary image.
+                        </p>
+                        <h5>Parameters</h5>
+                        <ul>
+                            <li><b>image</b> – image name of the fog application in <span class="text-dark-blue-filled">&lt;username&gt;</span>/<span class="text-dark-blue-filled">&lt;image_name&gt;</span>:<span class="text-dark-blue-filled">&lt;tag&gt;</span> format.</li>
+                            If no tag is specified, the default <b>latest</b> tag is used.
+                            <li><b>latitude</b> – Latitude of the IoT Hub.</li>
+                            <li><b>longitude</b> – Longitude of the IoT Hub.</li>
+                        </ul>
+                        <h5>Response</h5>
+                        <p>Code <b class="text-success">201 CREATED</b></p>
+                        <div class="col pl-3 pr-3">
+                            <pre><code>{
+  "<span class="text-danger">cluster</span>": {
+    "<span class="text-danger">id</span>": "<b>x5tpqicny5kzn84jbsffjhl08</b>",
+    "<span class="text-danger">state</span>": "<b>pending</b>"
+  },
+  "<span class="text-danger">message</span>": "Cluster of IoT devices has been created successfully."
+}</code></pre>
+                        </div>
+                        Please refer to <a href="https://docs.docker.com/engine/swarm/how-swarm-mode-works/swarm-task-states/">the official Docker documentation</a> for the meaning of <b>state</b> field.
+                        <h5>Errors</h5>
+                        <ul>
+                            <li><b class="text-danger">404 NOT FOUND</b> – Image with this name not found.</li>
+                            <li><b class="text-danger">422 UNPROCESSABLE ENTITY</b> – Image name parameter is required. It should consist of a username and an image name, such as &lt;username&gt;/&lt;image_name&gt;:&lt;tag&gt;. Tag parameter is optional.</li>
+                            <li><b class="text-danger">500 INTERNAL SERVER ERROR</b></li>
+                        </ul>
+
+
+                        <h3 class="border-bottom"><span class="badge badge-secondary mb-1">GET</span> /cluster/<b>&lt;cluster_id&gt;</b></h3>
+                        <p>
+                            This method returns information about an existing cluster.
+                        </p>
+                        <h5>Parameters</h5>
+                        <p>None</p>
+                        <h5>Response</h5>
+                        <p>Code <b class="text-success">200 OK</b></p>
+                        <div class="col pl-3 pr-3">
+                            <pre><code>{
+  "<span class="text-danger">cluster</span>": {
+    "<span class="text-danger">cloudlet_ip</span>": "<b>39.52.14.21</b>",
+    "<span class="text-danger">exposed_ports</span>": [
+      {
+        "<span class="text-danger">protocol</span>": "<b>tcp</b>",
+        "<span class="text-danger">published_port</span>": <b>32773</b>,
+        "<span class="text-danger">target_port</span>": <b>80</b>
+      }
+    ],
+    "<span class="text-danger">id</span>": "<b>x5tpqicny5kzn84jbsffjhl08</b>",
+    "<span class="text-danger">image</span>": "<b>username</b>/<b>image_name</b>:<b>tag</b>",
+    "<span class="text-danger">state</span>": "<b>running</b>"
+  },
+  "<span class="text-danger">message</span>": "IoT devices cluster was found."
+}</code></pre>
+                        </div>
+                        <p>
+                            <b>target_port</b> is the port you specified in Dockerfile when creating the image. <b>published_port</b> is the port that redirects all incoming traffic to the target_port of container.
+                            Please refer to <a href="https://docs.docker.com/engine/swarm/how-swarm-mode-works/swarm-task-states/">the official Docker documentation</a> for the meaning of <b>state</b> field.
+                        </p>
+                        <h5>Errors</h5>
+                        <ul>
+                            <li><b class="text-danger">404 NOT FOUND</b> – IoT devices cluster with specified id not found.</li>
+                            <li><b class="text-danger">500 INTERNAL SERVER ERROR</b></li>
+                        </ul>
+
+
+                        <h3 class="border-bottom"><span class="badge badge-secondary mb-1">DELETE</span> /cluster/<b>&lt;cluster_id&gt;</b></h3>
+                        <p>
+                            This method removes the IoT device cluster.
+                        </p>
+                        <h5>Parameters</h5>
+                        <p>None</p>
+                        <h5>Response</h5>
+                        <p>Code <b class="text-success">200 OK</b></p>
+                        <div class="col pl-3 pr-3">
+                            <pre><code>{
+  "<span class="text-danger">message</span>": "The IoT devices cluster has been removed."
+}</code></pre>
+                        </div>
+                        <h5>Errors</h5>
+                        <ul>
+                            <li><b class="text-danger">404 NOT FOUND</b> – IoT devices cluster with specified id not found.</li>
+                            <li><b class="text-danger">500 INTERNAL SERVER ERROR</b></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

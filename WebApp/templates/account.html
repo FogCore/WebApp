@@ -1,0 +1,99 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="container">
+        {% if response.status_code == 404 %}
+            <div class="jumbotron">
+                <h1 class="display-4">User not found!</h1>
+                <p class="lead">{{ response.json()['message'] }}</p>
+            </div>
+        {% elif response.status_code == 200 %}
+            <div class="border-section content-section col-lg-6 offset-lg-3">
+                <h2 class="border-bottom mb-4">Account editing</h2>
+
+                <form method="POST" action="">
+                    <fieldset class="form-group">
+                        {% set account = response.json()['user'] %}
+                        <div class="form-group row">
+                            <label for="staticUsername" class="col-sm-3 col-form-label"><b>Username</b></label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" id="staticUsername" value="{{ account.username }}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="firstName" class="col-sm-3 col-form-label"><b>First Name</b></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="firstName" placeholder="ex. Jane" value="{{ account.first_name }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="lastName" class="col-sm-3 col-form-label"><b>Last Name</b></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="lastName" placeholder="ex. Doe" value="{{ account.last_name }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="roleSelectPref"><b>Role</b></label>
+                            <div class="col-sm-9">
+                                <select class="custom-select col-sm-5" id="roleSelectPref" {% if not user.admin %}disabled{% endif %}>
+                                    <option value="0">Developer</option>
+                                    <option {% if account.admin %}selected{% endif %} value="1">Administrator</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3" for="password"><b>Password</b></label>
+                            <div class="col-sm-9">
+                                <input type="password" class="form-control" id="password" placeholder="New Password">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3" for="passwordConfirmation"><b>Password Confirmation</b></label>
+                            <div class="col-sm-9">
+                                <input type="password" class="form-control" id="passwordConfirmation" placeholder="Confirm New Password">
+                            </div>
+                        </div>
+
+                        <div class="row float-right">
+                            <button type="button" class="btn btn-outline-danger mr-2" data-toggle="modal" data-target="#deletionConfirmation">Delete account</button>
+
+                            <div class="modal fade" id="deletionConfirmation" tabindex="-1" role="dialog" aria-labelledby="deletionConfirmationLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deletionConfirmationLabel">Deletion confirmation</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to delete <b>{{account.username}}'s</b> account? This action is irreversible.
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger">Delete account</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-outline-success mr-3">Apply</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        {% else %}
+            <div class="jumbotron">
+                <h1 class="display-5">{{ response.json()['message'] }}</h1>
+                {% if response.status_code == 403 %}
+                    <p class="lead">You can only access your account.</p>
+                {% else %}
+                    <p class="lead">Please try again later.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}

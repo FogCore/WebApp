@@ -1,0 +1,60 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="container">
+        <h1 class="text-center">Welcome to our Fog Computing System!</h1>
+        <p>
+            FogCore is a system that provides fog computing resources in automatic mode.
+            If you want your IoT devices use these resources, you should make your application and upload its Docker image to the system.
+            Now when your IoT devices need computing resources, they should send a request to FogCore and report the geographic location and image name they need.
+            FogCore will automatically find the closest fog node to your IoT device and deploy requested application on it in isolated container.
+        </p>
+        <p>
+            If you want to know how to work with our system, please visit the documentation page. If you are interested in our system, please join us.
+        </p>
+
+
+        <h3 class="text-center mt-5">Why do we need something else than cloud computing?</h3>
+        <p>
+            Nowadays cloud computing is extensively used for various kinds of tasks. Whether it's file storage, communication, provision of entertainment content or scientific research.
+            This approach has huge advantages, but also imposes some limitations. One of the most serious limitations is latency.
+            This limitation prevents cloud computing from being used in areas that require the fastest possible system response when certain events occur.
+        </p>
+        <h4 class="text-center">Cloud computing</h4>
+        <div class="row">
+            <div class="col-sm-6">
+                <h5 class="text-center">Advantages</h5>
+                <b class="text-dark-blue-filled">Cost reduction</b><br>
+                <p>Cloud computing helps you to save substantial capital cost as it does not need any physical hardware investments. Also, you do not need trained personnel to maintain the hardware.</p>
+                <b class="text-dark-blue-filled">Accessibility</b><br>
+                <p>Employees who are working on the premises or at the remote locations can easily access all the could services. All they need is an Internet connectivity.</p>
+                <b class="text-dark-blue-filled">Unlimited storage capacity and computing resources</b><br>
+                <p>The cloud offers almost limitless storage capacity. At any time you can quickly expand your storage capacity with very nominal monthly fees.</p>
+            </div>
+            <div class="col-sm-6">
+                <h5 class="text-center">Disadvantages</h5>
+                <b class="text-dark-blue-filled">Latency</b><br>
+                <p>Cloud computing has a long latency, because computing resources can be located very far from the end-user.</p>
+                <b class="text-dark-blue-filled">Disruption of cloud services</b><br>
+                <p>In case of a cyber-attack, power outage or loss of Internet connectivity at the Cloud provider’s side your business can suffer from unwanted downtime.</p>
+                <b class="text-dark-blue-filled">Geographical location</b><br>
+                <p>Some countries oblige the storage and processing of user data within that country.</p>
+            </div>
+        </div>
+
+
+        <h3 class="text-center mt-5">What is fog computing?</h3>
+        <p>
+            Fog computing is a layered model for enabling ubiquitous access to a shared continuum of scalable computing resources.
+            The model facilitates the deployment of distributed, latency-aware applications and services, and consists of fog nodes (physical or virtual), residing between smart end-devices and centralized (cloud) services.
+            The fog nodes are context aware and support a common data management and communication system.
+            Fog computing minimizes the request-response time from/to supported applications, and provides, for the end-devices, local computing resources and, when needed, network connectivity to centralized services.
+        </p>
+        <img src="{{ url_for('static', filename='Fog computing concept.png') }}" class="img-thumbnail mx-auto d-block col-lg-8 mb-3" alt="Fog computing image">
+        <p>
+            Although fog computing differs from cloud computing in many ways, it is not intended to completely replace cloud computing.
+            To solve some tasks the fog computing may not have enough computational resources, but the location of these resources nearby consumers is the advantage.
+            The concept of fog computing is created to get rid of the disadvantages inherent in the concept of cloud computing. To create a more comprehensive solution we can combine these two concepts.
+            This will allow the end-user to choose the type of service which will satisfy his needs to a greater extent.
+        </p>
+    </div>
+{% endblock content %}

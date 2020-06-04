@@ -1,0 +1,82 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="container">
+        {% if response.status_code == 404 %}
+            <div class="jumbotron">
+                <h1 class="display-4">A cloudlet with this identifier was not found!</h1>
+                <p class="lead">To add a new cloudlet, use the appropriate <a href="#">instructions</a>.</p>
+                <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+            </div>
+        {% elif response.status_code == 200 %}
+            {% set cloudlet = response.json()['cloudlets'][0] %}
+            <div class="card">
+                <h5 class="card-header">{{ cloudlet.get('name') }}</h5>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <p class="card-text col-md-6 ml-4">
+                            <strong>Identifier:</strong> {{ cloudlet.id }}<br>
+                        </p>
+                        <p class="card-text col-md-5 ml-4">
+                            <strong>IP Address:</strong> {{ cloudlet.ip }}<br>
+                        </p>
+                    </div>
+
+                    <h5 class="card-title">Location</h5>
+                    <div class="row mb-1">
+                        <p class="card-text col-md-6 ml-4">
+                            <strong>Country:</strong> {{ cloudlet.country }}<br>
+                        </p>
+                        <p class="card-text col-md-5 ml-4">
+                            <strong>Region:</strong> {{ cloudlet.region }}<br>
+                        </p>
+                    </div>
+                    <div class="row mb-2">
+                        <p class="card-text col-md-6 ml-4">
+                            <strong>City:</strong> {{ cloudlet.city }}<br>
+                        </p>
+                        <p class="card-text col-md-5 ml-4">
+                            <strong>Geographical Coordinates:</strong> {{ cloudlet.latitude }}, {{ cloudlet.longitude }}<br>
+                        </p>
+                    </div>
+
+                    <h5 class="card-title">Specifications</h5>
+                    <div class="row mb-1">
+                        <p class="card-text col-md-6 ml-4">
+                            <strong>CPU Frequency:</strong> {{ cloudlet.cpu_frequency }} MHz<br>
+                        </p>
+                        <p class="card-text col-md-5 ml-4">
+                            <strong>Cores:</strong> {{ cloudlet.cpu_cores }}<br>
+                        </p>
+                    </div>
+                    <div class="row mb-2">
+                        <p class="card-text col-md-6 ml-4">
+                            <strong>RAM Size:</strong> {{ convert_size(cloudlet.ram_size) }}<br>
+                        </p>
+                        <p class="card-text col-md-5 ml-4">
+                            <strong>Disk space:</strong> {{ convert_size(cloudlet.rom_size) }}<br>
+                        </p>
+                    </div>
+
+                    <h5 class="card-title">Operating System</h5>
+                    <div class="row mb-1">
+                        <p class="card-text col-md-6 ml-4">
+                            <strong>Name:</strong> {{ cloudlet.os }}<br>
+                        </p>
+                        <p class="card-text col-md-5 ml-4">
+                            <strong>Kernel:</strong> {{ cloudlet.os_kernel }}<br>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="jumbotron">
+                <h1 class="display-5">{{ response.json()['message'] }}</h1>
+                {% if response.status_code == 403 %}
+                    <p class="lead">Only an administrator can access this resource.</p>
+                {% else %}
+                    <p class="lead">Please try again later.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}

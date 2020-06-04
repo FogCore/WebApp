@@ -1,0 +1,77 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="container">
+        {% if response.status_code == 404 %}
+            <div class="jumbotron">
+                <h1 class="display-4">An application image with the specified name was not found!</h1>
+                <p class="lead">If you want to add such image, push it into our <a href="#">registry.docker.com</a> repository using the Docker Client on your local machine.</p>
+                <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+            </div>
+        {% elif response.status_code == 200 %}
+            {% set image = response.json()['image'] %}
+            {% set owner = image.name.split('/')[0] %}
+            <div class="card">
+                <h5 class="card-header">{{ image['name'] }}</h5>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="type"><b>Type</b></label>
+                            <input type="text" readonly class="form-control-plaintext ml-3" id="type" value="{{ image['type'] }}">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="imageOwner"><b>Image Owner</b></label>
+                            <a href="{{ url_for('account', username=owner) }}" class="form-control-plaintext ml-3" id="imageOwner">{{ owner }}</a>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="updated"><b>Updated</b></label>
+                            <input type="text" readonly class="form-control-plaintext ml-3" id="updated" value="{{ datetime.utcfromtimestamp(int(image['updated'])).strftime('%Y-%m-%d %H:%M:%S') }}">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="actions"><b>Actions</b></label>
+                            <input type="text" readonly class="form-control-plaintext ml-3" id="actions" value="{{ image['actions']|join(', ') }}">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="tags"><b>Tags</b></label>
+                            <input type="text" readonly class="form-control-plaintext ml-3" id="tags" value="{{ image['tags']|join(', ') }}">
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-outline-danger float-right" data-toggle="modal" data-target="#deletionConfirmation">Delete image</button>
+                    <div class="modal fade" id="deletionConfirmation" tabindex="-1" role="dialog" aria-labelledby="deletionConfirmationLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deletionConfirmationLabel">Deletion confirmation</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete <b>{{ image['name'] }}</b> image? This action is irreversible.
+                                </div>
+                                <div class="modal-footer">
+                                    <a class="btn btn-danger" href="{{ url_for('delete_image', username=owner, image_name=image['name'].split('/')[1]) }}">Delete image</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="jumbotron">
+                <h1 class="display-5">{{ response.json()['message'] }}</h1>
+                {% if response.status_code == 403 %}
+                    <p class="lead">You can only access your fog applications images.</p>
+                {% else %}
+                    <p class="lead">Please try again later.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}

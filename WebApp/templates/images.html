@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="container">
+        {% if response.status_code == 404 %}
+            <div class="jumbotron">
+                <h1 class="display-4">You have no images yet!</h1>
+                <p class="lead">To add a new image, push it into our <a href="#">registry.docker.com</a> repository using the Docker Client on your local machine.</p>
+                <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+            </div>
+        {% elif response.status_code == 200 %}
+            {% for image in response.json()['images'] %}
+                {% if user.admin %}
+                    <h3 class="ml-3">{{ image['username'] }}</h3>
+                {% endif %}
+                {% for item in image.list %}
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="card-title"><a href="{{ url_for('image', username=image['username'], image_name=item.name.split('/')[1]) }}">{{ item.name }}</a></h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <p class="card-text"><strong>Updated:</strong> {{ datetime.utcfromtimestamp(int(item.updated)).strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <p class="card-text"><strong>Tags:</strong> {{ item.tags|join(', ') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        {% else %}
+            <div class="jumbotron">
+                <h1 class="display-5">{{ response.json()['message'] }}</h1>
+                <p class="lead">Please try again later.</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}

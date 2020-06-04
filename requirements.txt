@@ -1,0 +1,5 @@
+flask==1.1.1
+flask_jwt_extended==3.24.1
+Flask-WTF==0.14.3
+requests==2.23.0
+cryptography==2.8

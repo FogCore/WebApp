@@ -1,0 +1,40 @@
+.content-section {
+    padding: 10px 20px;
+    margin-bottom: 20px;
+}
+
+.border-section {
+    border-radius: 3px;
+    border: 1px solid #dddddd;
+}
+
+.sticky-offset {
+    top: 66px;
+    z-index: 0;
+}
+
+pre {
+    padding: 10px;
+    border-radius: 5px;
+    background: hsl(30, 0%, 91%);
+}
+
+.nav-pills .nav-link {
+    color: rgba(33, 37, 41, 1);
+}
+
+.nav-pills .nav-link.active {
+    color: #ffffff;
+    background-color: rgba(108, 117, 125, 1);
+}
+
+.text-dark-blue {
+    color: rgba(10, 71, 108, 1);
+}
+
+.text-dark-blue-filled {
+    padding: 5px;
+    border-radius: 5px;
+    color: rgba(10, 71, 108, 1);
+    background: rgba(235, 238, 240, 1);
+}

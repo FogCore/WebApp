@@ -1,0 +1,244 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <div class="container">
+        {% if response.status_code == 200 %}
+            <div class="border-section content-section">
+                <form method="POST" action="">
+                    {{ form.hidden_tag() }}
+                    <fieldset class="form-group">
+                        <div class="row mb-2">
+                            <div class="col">
+                                <legend class="border-bottom">Search</legend>
+                            </div>
+                            <div class="col-1">
+                                {{ form.submit(class="btn btn-outline-success float-right") }}
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md">
+                                {% if form.name.errors %}
+                                {{ form.name(class="form-control is-invalid", placeholder="Name") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.name.errors %}
+                                    <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                {{ form.name(class="form-control", placeholder="Name") }}
+                                {% endif %}
+                            </div>
+                            <div class="form-group col-md">
+                                {% if form.id.errors %}
+                                {{ form.id(class="form-control is-invalid", placeholder="ID") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.id.errors %}
+                                    <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                {{ form.id(class="form-control", placeholder="ID") }}
+                                {% endif %}
+                            </div>
+                            <div class="form-group col-md">
+                                {% if form.ip.errors %}
+                                {{ form.ip(class="form-control is-invalid", placeholder="IP address") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.ip.errors %}
+                                    <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                {{ form.ip(class="form-control", placeholder="IP address") }}
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="collapse" id="collapseSearch">
+                            <h6>Location</h6>
+                            <div class="form-row">
+                                <div class="form-group col-md">
+                                    {% if form.country.errors %}
+                                    {{ form.country(class="form-control is-invalid", placeholder="Country") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.country.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.country(class="form-control", placeholder="Country") }}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group col-md">
+                                    {% if form.region.errors %}
+                                    {{ form.region(class="form-control is-invalid", placeholder="Region") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.region.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.region(class="form-control", placeholder="Region") }}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group col-md">
+                                    {% if form.city.errors %}
+                                    {{ form.city(class="form-control is-invalid", placeholder="City") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.city.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.city(class="form-control", placeholder="City") }}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group col-md-2">
+                                    {% if form.latitude.errors %}
+                                    {{ form.latitude(class="form-control is-invalid", placeholder="Latitude") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.latitude.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.latitude(class="form-control", placeholder="Latitude") }}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group col-md-2">
+                                    {% if form.longitude.errors %}
+                                    {{ form.longitude(class="form-control is-invalid", placeholder="Longitude") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.longitude.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.longitude(class="form-control", placeholder="Longitude") }}
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <h6>Specifications</h6>
+                            <div class="form-row">
+                                <div class="form-group col-md-2">
+                                    {% if form.cpu_cores.errors %}
+                                    {{ form.cpu_cores(class="form-control is-invalid", placeholder="CPU cores") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.cpu_cores.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.cpu_cores(class="form-control", placeholder="CPU cores") }}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group col-md-2">
+                                    {% if form.cpu_frequency.errors %}
+                                    {{ form.cpu_frequency(class="form-control is-invalid", placeholder="CPU Frequency") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.cpu_frequency.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.cpu_frequency(class="form-control", placeholder="CPU Frequency") }}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group col-md-2">
+                                    {% if form.ram_size.errors %}
+                                    {{ form.ram_size(class="form-control is-invalid", placeholder="RAM") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.ram_size.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.ram_size(class="form-control", placeholder="RAM") }}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group col-md-2">
+                                    {% if form.rom_size.errors %}
+                                    {{ form.rom_size(class="form-control is-invalid", placeholder="ROM") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.rom_size.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.rom_size(class="form-control", placeholder="ROM") }}
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <h6>Operating system</h6>
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    {% if form.os.errors %}
+                                    {{ form.os(class="form-control is-invalid", placeholder="Operating system") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.os.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.os(class="form-control", placeholder="Operating system") }}
+                                    {% endif %}
+                                </div>
+                                <div class="form-group col-md-2">
+                                    {% if form.os_kernel.errors %}
+                                    {{ form.os_kernel(class="form-control is-invalid", placeholder="Kernel") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.os_kernel.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.os_kernel(class="form-control", placeholder="Kernel") }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <a class="float-right" data-toggle="collapse" href="#collapseSearch" role="button" aria-expanded="false" aria-controls="collapseSearch">
+                            Advanced search
+                        </a>
+                    </fieldset>
+                </form>
+            </div>
+
+            {% for cloudlet in response.json()['cloudlets'] %}
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="{{ url_for('cloudlet', id=cloudlet.id) }}">{{ cloudlet.name + ' (' + cloudlet.id + ')' }}</a></h5>
+
+                            <div class="row">
+                                <div class="col-sm">
+                                    <p class="card-text">
+                                        <strong>IP address:</strong> {{ cloudlet.ip }}<br>
+                                        <strong>Location:</strong> {{ cloudlet.country }}, {{ cloudlet.region }}, {{ cloudlet.city }}
+                                    </p>
+                                </div>
+
+                                <div class="col-sm">
+                                    <p class="card-text">
+                                        <strong>Operating system:</strong> {{ cloudlet.os }}<br>
+                                        <strong>Specifications:</strong> {{ cloudlet.cpu_cores }} cores, {{ convert_size(cloudlet.ram_size) }} of RAM
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            {% endfor %}
+        {% else %}
+            <div class="jumbotron">
+                <h1 class="display-5">{{ response.json()['message'] }}</h1>
+                {% if response.status_code == 404 %}
+                    <p class="lead">Try to change your search criteria.</p>
+                {% else %}
+                    <p class="lead">Please try again later.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}
