@@ -5,7 +5,7 @@
             <div class="jumbotron">
                 <h1 class="display-4">An application image with the specified name was not found!</h1>
                 <p class="lead">If you want to add such image, push it into our <a href="#">registry.docker.com</a> repository using the Docker Client on your local machine.</p>
-                <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+                <a class="btn btn-primary btn-lg" href="{{ url_for('documentation') }}" role="button">Learn more</a>
             </div>
         {% elif response.status_code == 200 %}
             {% set image = response.json()['image'] %}

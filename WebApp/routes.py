@@ -1,6 +1,6 @@
 from WebApp.models import User
 from WebApp import app, jwt, APIGateway
-from WebApp.forms import SignUpForm, SignInForm, CloudletsFindForm
+from WebApp.forms import SignUpForm, SignInForm, CloudletsFindForm, UpdateUserDataForm, UpdatePasswordForm
 from flask import render_template, url_for, flash, redirect, make_response, request
 from flask_jwt_extended import (
     jwt_optional, jwt_required, set_access_cookies,
@@ -112,14 +112,40 @@ def logout():
 
 
 # User account page
-@app.route('/account')
+@app.route('/account', methods=['GET', 'POST'])
 @jwt_required
 def account():
-    username = request.values.get('username', type=str)
+    username = request.values.get('username', type=str) if request.values.get('username', type=str) else current_user.username
     token = request.cookies.get('access_token')
-    api_response = APIGateway.User.get_user_info(username=username if username else current_user.username,
-                                                 token=token)
-    return render_template('account.html', title='Account', response=api_response, user=current_user)
+    api_response = APIGateway.User.get_user_info(username=username, token=token)
+    user = api_response.json().get('user')
+
+    update_data_form = UpdateUserDataForm()
+    if user:
+        update_data_form = UpdateUserDataForm(role='adm' if user.get('admin') else 'dev',
+                                              first_name=user.get('first_name'),
+                                              last_name=user.get('last_name'))
+    password_form = UpdatePasswordForm()
+
+    if update_data_form.submit_account.data and update_data_form.validate_on_submit():
+        update_user_response = APIGateway.User.update_user_data(username=username,
+                                                                first_name=update_data_form.first_name.data,
+                                                                last_name=update_data_form.last_name.data,
+                                                                admin=1 if update_data_form.role.data == 'adm' else 0,
+                                                                token=token)
+        json = update_user_response.json()
+        flash(json['message'], 'success' if update_user_response.status_code == 200 else 'danger')
+        response = make_response(redirect(url_for('account', username=username)))
+        if json.get('access_token'):
+            set_access_cookies(response, json['access_token'])
+        return response
+
+    if password_form.submit_password.data and password_form.validate_on_submit():
+        update_password_response = APIGateway.User.update_password(username=username, password=password_form.new_password.data, token=token)
+        json = update_password_response.json()
+        flash(json['message'], 'success' if update_password_response.status_code == 200 else 'danger')
+
+    return render_template('account.html', title='Account', response=api_response, user=current_user, update_data_form=update_data_form, password_form=password_form)
 
 
 # Fog application images page

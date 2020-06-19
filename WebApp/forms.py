@@ -1,7 +1,7 @@
 from WebApp import APIGateway
 from flask_wtf import FlaskForm
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, Regexp
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, FloatField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, FloatField, SelectField
 
 
 class SignUpForm(FlaskForm):
@@ -46,3 +46,18 @@ class CloudletsFindForm(FlaskForm):
     country = StringField('Country')
     region = StringField('Region')
     submit = SubmitField('Start')
+
+
+class UpdateUserDataForm(FlaskForm):
+    ROLE_CHOICES = [('dev', 'Developer'), ('adm', 'Administrator')]
+
+    first_name = StringField('First Name', validators=[DataRequired()])
+    last_name = StringField('Last Name', validators=[DataRequired()])
+    role = SelectField('Role', choices=ROLE_CHOICES)
+    submit_account = SubmitField('Apply')
+
+
+class UpdatePasswordForm(FlaskForm):
+    new_password = PasswordField('New Password', validators=[DataRequired(), Length(min=8, max=32)])
+    confirm_new_password = PasswordField('Confirm New Password', validators=[DataRequired(), EqualTo('new_password')])
+    submit_password = SubmitField('Change')

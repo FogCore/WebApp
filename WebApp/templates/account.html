@@ -8,10 +8,10 @@
             </div>
         {% elif response.status_code == 200 %}
             <div class="border-section content-section col-lg-6 offset-lg-3">
-                <h2 class="border-bottom mb-4">Account editing</h2>
-
                 <form method="POST" action="">
+                    {{ update_data_form.hidden_tag() }}
                     <fieldset class="form-group">
+                        <legend class="border-bottom mb-4">Account</legend>
                         {% set account = response.json()['user'] %}
                         <div class="form-group row">
                             <label for="staticUsername" class="col-sm-3 col-form-label"><b>Username</b></label>
@@ -21,66 +21,88 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="firstName" class="col-sm-3 col-form-label"><b>First Name</b></label>
+                            {{ update_data_form.first_name.label(class="col-sm-3 col-form-label font-weight-bold") }}
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="firstName" placeholder="ex. Jane" value="{{ account.first_name }}">
+                                {% if update_data_form.first_name.errors %}
+                                    {{ update_data_form.first_name(class="form-control is-invalid", placeholder="ex. Jane") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in update_data_form.first_name.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ update_data_form.first_name(class="form-control", placeholder="ex. Jane") }}
+                                {% endif %}
                             </div>
                         </div>
 
                         <div class="form-group row">
-                            <label for="lastName" class="col-sm-3 col-form-label"><b>Last Name</b></label>
+                            {{ update_data_form.last_name.label(class="col-sm-3 col-form-label font-weight-bold") }}
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="lastName" placeholder="ex. Doe" value="{{ account.last_name }}">
+                                {% if update_data_form.last_name.errors %}
+                                    {{ update_data_form.last_name(class="form-control is-invalid", placeholder="ex. Doe") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in update_data_form.last_name.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ update_data_form.last_name(class="form-control", placeholder="ex. Doe") }}
+                                {% endif %}
                             </div>
                         </div>
 
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label" for="roleSelectPref"><b>Role</b></label>
+                            {{ update_data_form.role.label(class="col-sm-3 col-form-label font-weight-bold") }}
                             <div class="col-sm-9">
-                                <select class="custom-select col-sm-5" id="roleSelectPref" {% if not user.admin %}disabled{% endif %}>
-                                    <option value="0">Developer</option>
-                                    <option {% if account.admin %}selected{% endif %} value="1">Administrator</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-3" for="password"><b>Password</b></label>
-                            <div class="col-sm-9">
-                                <input type="password" class="form-control" id="password" placeholder="New Password">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-3" for="passwordConfirmation"><b>Password Confirmation</b></label>
-                            <div class="col-sm-9">
-                                <input type="password" class="form-control" id="passwordConfirmation" placeholder="Confirm New Password">
+                                {{ update_data_form.role(class="custom-select col-sm-5", disabled=False if user.admin else True) }}
                             </div>
                         </div>
 
                         <div class="row float-right">
-                            <button type="button" class="btn btn-outline-danger mr-2" data-toggle="modal" data-target="#deletionConfirmation">Delete account</button>
+                            {{ update_data_form.submit_account(class="btn btn-outline-success mr-3") }}
+                        </div>
+                    </fieldset>
+                </form>
 
-                            <div class="modal fade" id="deletionConfirmation" tabindex="-1" role="dialog" aria-labelledby="deletionConfirmationLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="deletionConfirmationLabel">Deletion confirmation</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Are you sure you want to delete <b>{{account.username}}'s</b> account? This action is irreversible.
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger">Delete account</button>
-                                        </div>
+                <form method="POST" action="">
+                    {{ password_form.hidden_tag() }}
+                    <fieldset class="form-group">
+                        <legend class="border-bottom mb-4">Password</legend>
+                        <div class="form-group row">
+                            {{ password_form.new_password.label(class="col-sm-3 col-form-label font-weight-bold") }}
+                            <div class="col-sm-9">
+                                {% if password_form.new_password.errors %}
+                                    {{ password_form.new_password(class="form-control is-invalid", placeholder="Type New Password") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in password_form.new_password.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
                                     </div>
-                                </div>
+                                {% else %}
+                                    {{ password_form.new_password(class="form-control", placeholder="Type New Password") }}
+                                {% endif %}
                             </div>
+                        </div>
 
-                            <button type="button" class="btn btn-outline-success mr-3">Apply</button>
+                        <div class="form-group row">
+                            {{ password_form.confirm_new_password.label(class="col-sm-3 col-form-label font-weight-bold") }}
+                            <div class="col-sm-9">
+                                {% if password_form.confirm_new_password.errors %}
+                                    {{ password_form.confirm_new_password(class="form-control is-invalid", placeholder="Confirm New Password") }}
+                                    <div class="invalid-feedback">
+                                        {% for error in password_form.confirm_new_password.errors %}
+                                            <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ password_form.confirm_new_password(class="form-control", placeholder="Confirm New Password") }}
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row float-right">
+                            {{ password_form.submit_password(class="btn btn-outline-success mr-3") }}
                         </div>
                     </fieldset>
                 </form>

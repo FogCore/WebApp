@@ -36,6 +36,20 @@ class User:
         headers = {'Authorization': 'Bearer ' + token}
         return requests.get(url=User.API_Gateway_URL, params=params, headers=headers)
 
+    # Sets the full user name and administrator rights
+    @staticmethod
+    def update_user_data(username, first_name, last_name, admin, token):
+        params = {'first_name': first_name, 'last_name': last_name, 'admin': admin}
+        headers = {'Authorization': 'Bearer ' + token}
+        return requests.put(url=User.API_Gateway_URL + '/' + username, params=params, headers=headers)
+
+    # Sets new user password
+    @staticmethod
+    def update_password(username, password, token):
+        params = {'password': password}
+        headers = {'Authorization': 'Bearer ' + token}
+        return requests.patch(url=User.API_Gateway_URL + '/' + username, params=params, headers=headers)
+
 
 # This class contains the API Gateway methods for working with images of fog applications
 class Images:
